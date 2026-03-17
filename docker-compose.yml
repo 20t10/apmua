@@ -2,6 +2,8 @@
 networks:
   loki:
   prometheus:
+  monitoring:
+    external: true
 
 services:
   prometheus:
@@ -17,6 +19,7 @@ services:
       - '--storage.tsdb.path=/prometheus'
     networks:
       - prometheus
+      - monitoring
     restart: unless-stopped
 
   loki:
@@ -30,6 +33,7 @@ services:
       - loki_data:/loki
     networks:
       - loki
+      - monitoring
     restart: unless-stopped
 
   promtail:
@@ -37,10 +41,12 @@ services:
     container_name: promtail
     volumes:
       - /var/log:/var/log:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - ./loki/promtail-config.yml:/etc/promtail/promtail-config.yml
     command: -config.file=/etc/promtail/promtail-config.yml
     networks:
       - loki
+      - monitoring
     restart: unless-stopped
 
   grafana:
@@ -59,6 +65,7 @@ services:
     networks:
       - loki
       - prometheus
+      - monitoring
     restart: unless-stopped
 volumes:
   prometheus_data:
