@@ -6,7 +6,7 @@ positions:
   filename: /tmp/positions.yaml
 
 clients:
-  - url: http://loki:3100/api/prom/push
+  - url: http://loki:3100/loki/api/v1/push
 
 scrape_configs:
 - job_name: system
@@ -17,16 +17,65 @@ scrape_configs:
       job: syslog
       __path__: /var/log/*.log
 
-- job_name: docker
-  docker_sd_configs:
-    - host: unix:///var/run/docker.sock
-      refresh_interval: 5s
-      filters:
-        - name: label
-          values: ["logging=promtail"]
-  relabel_configs:
-    - source_labels: ['__meta_docker_container_name']
-      regex: '/(.*)'
-      target_label: 'container'
-    - source_labels: ['__meta_docker_container_log_stream']
-      target_label: 'logstream'
+- job_name: mesx-erp_backend
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      job: mesx-erp_backend
+      container_name: mesx-erp_backend
+      __path__: /var/lib/docker/containers/7b236a60887b487ccba013eb7f09de24a848718576c7312d2a2011a3fcf9be6f/*-json.log
+
+- job_name: loki
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      job: loki
+      container_name: loki
+      __path__: /var/lib/docker/containers/d1b129804686a2a3d9469b1bc6d6ce16a6ab18272aa7df5287fb4e1d618ee6e6/*-json.log
+
+- job_name: prometheus
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      job: prometheus
+      container_name: prometheus
+      __path__: /var/lib/docker/containers/15f773460a2d50505738722338bf1271058901a372570ea138048b32b8449b14/*-json.log
+
+- job_name: grafana
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      job: grafana
+      container_name: grafana
+      __path__: /var/lib/docker/containers/b56d5a545c117cef9f20b4c0433c78fda48d0f524d5ae203f5f655084edbaba1/*-json.log
+
+- job_name: frontend
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      job: frontend
+      container_name: mesx-erp_frontend
+      __path__: /var/lib/docker/containers/932bd3e86bbb51267d70fc4aadc90f07182766629dd272630804e2a7f6631bb4/*-json.log
+
+- job_name: postgres
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      job: postgres
+      container_name: mesx-erp_db
+      __path__: /var/lib/docker/containers/7f97024bf99bcb48d1e114bc3921625e0c96fee725ed3d7069e5596b2d4dd569/*-json.log
+
+- job_name: redis
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      job: redis
+      container_name: mesx-erp_redis
+      __path__: /var/lib/docker/containers/52fd37723c01add8bd6db7d0f31dd8a804cc7d5250ad652403d32195892193ee/*-json.log

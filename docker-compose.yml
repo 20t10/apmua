@@ -10,7 +10,7 @@ services:
     image: prom/prometheus:latest
     container_name: prometheus
     ports:
-      - "9009:9009"
+      - "9009:9090"
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
@@ -56,8 +56,7 @@ services:
       - "3003:3003"
     volumes:
       - grafana_data:/var/lib/grafana
-      # Optional: provision data sources automatically
-      # - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/provisioning:/etc/grafana/provisioning
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin # Default username/password is admin/admin
