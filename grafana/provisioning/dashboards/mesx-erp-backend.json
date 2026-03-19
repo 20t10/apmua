@@ -12,7 +12,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -56,7 +56,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "Prometheus"
           },
           "expr": "sum(rate(http_requests_total[5m]))",
           "legendFormat": "Requests/sec",
@@ -69,7 +69,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -142,27 +142,27 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "Prometheus"
           },
-          "expr": "histogram_quantile(0.50, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))",
+          "expr": "avg by (quantile) (http_request_duration_seconds{quantile=\"0.5\"})",
           "legendFormat": "p50",
           "refId": "A"
         },
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "Prometheus"
           },
-          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))",
+          "expr": "avg by (quantile) (http_request_duration_seconds{quantile=\"0.95\"})",
           "legendFormat": "p95",
           "refId": "B"
         },
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "Prometheus"
           },
-          "expr": "histogram_quantile(0.99, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))",
+          "expr": "avg by (quantile) (http_request_duration_seconds{quantile=\"0.99\"})",
           "legendFormat": "p99",
           "refId": "C"
         }
@@ -173,7 +173,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "Prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -246,7 +246,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "prometheus"
+            "uid": "Prometheus"
           },
           "expr": "sum by (method, status) (rate(http_requests_total[5m]))",
           "legendFormat": "{{method}} {{status}}",
@@ -259,7 +259,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "loki"
+        "uid": "Loki"
       },
       "fieldConfig": {
         "defaults": {
@@ -332,7 +332,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "loki"
+            "uid": "Loki"
           },
           "expr": "count_over_time({job=\"mesx-erp_backend\"}[5m])",
           "legendFormat": "Log Rate",
@@ -345,7 +345,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "loki"
+        "uid": "Loki"
       },
       "gridPos": {
         "h": 10,
@@ -368,7 +368,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "loki"
+            "uid": "Loki"
           },
           "expr": "{job=\"mesx-erp_backend\"}",
           "legendFormat": "",
