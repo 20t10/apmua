@@ -293,6 +293,117 @@ docker exec grafana grafana cli admin reset-admin-password admin
 
 ---
 
+## อธิบายโครงสร้าง Dashboard JSON
+
+### โครงสร้างหลัก (Top-level)
+
+```json
+{
+  "title": "ชื่อ Dashboard",
+  "uid": "unique-id",
+  "panels": [ /* รายการ panels */ ],
+  "time": { "from": "now-15m", "to": "now" },
+  "refresh": "5s"
+}
+```
+
+### หนึ่ง Panel มีโครงสร้างดังนี้:
+
+```json
+{
+  "id": 1,                    // ลำดับ panel
+  "title": "HTTP Request Rate", // ชื่อที่แสดง
+  "type": "stat",              // ประเภท panel
+  
+  "gridPos": {                 // ตำแหน่งใน dashboard
+    "h": 8,                    // ความสูง (grid units)
+    "w": 12,                   // ความกว้าง (12/24 = ครึ่งหน้าจอ)
+    "x": 0,                    // ตำแหน่ง X
+    "y": 0                     // ตำแหน่ง Y
+  },
+  
+  "datasource": {              // แหล่งข้อมูล
+    "type": "prometheus",
+    "uid": "Prometheus"
+  },
+  
+  "targets": [                 // === ตรงนี้คือ Query ===
+    {
+      "expr": "sum(rate(http_requests_total[5m]))",  // PromQL query
+      "legendFormat": "Requests/sec"
+    }
+  ],
+  
+  "fieldConfig": {             // ตกแต่ง panel
+    "defaults": {
+      "unit": "reqps",         // หน่วยแสดงผล
+      "thresholds": { /* เกณฑ์สี */ }
+    }
+  },
+  
+  "options": {                 // ตัวเลือกเพิ่มเติม
+    "colorMode": "value"
+  }
+}
+```
+
+### วิธีเพิ่ม Panel ใหม่
+
+เพิ่ม object ใหม่เข้าไปใน `panels: []`:
+
+```json
+"panels": [
+  { /* Panel 1 */ },
+  { /* Panel 2 */ },
+  { /* Panel 3 */ },
+  { /* เพิ่ม Panel ใหม่ตรงนี้ */ }
+]
+```
+
+### ตัวอย่างเพิ่ม Panel ใหม่ - CPU Usage:
+
+```json
+{
+  "id": 6,
+  "title": "CPU Usage",
+  "type": "timeseries",
+  "gridPos": { "h": 8, "w": 12, "x": 0, "y": 26 },
+  "datasource": { "type": "prometheus", "uid": "Prometheus" },
+  "targets": [
+    {
+      "expr": "rate(process_cpu_seconds_total[5m]) * 100",
+      "legendFormat": "CPU %"
+    }
+  ],
+  "fieldConfig": {
+    "defaults": {
+      "unit": "percent",
+      "max": 100,
+      "thresholds": {
+        "steps": [
+          { "color": "green", "value": null },
+          { "color": "yellow", "value": 70 },
+          { "color": "red", "value": 90 }
+        ]
+      }
+    }
+  }
+}
+```
+
+### Panel Types ที่ใช้บ่อย
+
+| type | ใช้แสดง |
+|------|----------|
+| `stat` | ค่าเดียว (total, current) |
+| `timeseries` | กราฟเส้น/bar ตามเวลา |
+| `logs` | รายการ log |
+| `gauge` | gauge แบบวงกลม |
+| `table` | ตาราง |
+| `piechart` | วงกลมแสดงสัดส่วน |
+
+---
+
 ## การ Query Prometheus
 
 ### Basic Metrics
